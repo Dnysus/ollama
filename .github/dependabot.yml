@@ -1,0 +1,126 @@
+# Dependabot configuration for Ollama
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # Go module at the repository root
+  - package-ecosystem: 'gomod'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    labels:
+      - 'dependencies'
+      - 'go'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      # Group minor/patch bumps into one PR; majors stay individual.
+      go-minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # npm app for the desktop UI (app/ui/app has its own package-lock.json)
+  - package-ecosystem: 'npm'
+    directory: '/app/ui/app'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    versioning-strategy: 'increase'
+    labels:
+      - 'dependencies'
+      - 'npm'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      # A dependency joins the first group it matches, so keep the
+      # catch-all group last.
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
+      tanstack:
+        patterns:
+          - '@tanstack/*'
+      storybook:
+        patterns:
+          - 'storybook'
+          - '@storybook/*'
+          - '@chromatic-com/storybook'
+          - 'eslint-plugin-storybook'
+      vite-and-vitest:
+        patterns:
+          - 'vite'
+          - 'vite-*'
+          - '@vitejs/*'
+          - 'vitest'
+          - '@vitest/*'
+          - 'playwright'
+      markdown:
+        patterns:
+          - 'react-markdown'
+          - 'remark*'
+          - 'rehype*'
+          - 'micromark*'
+          - 'unist*'
+          - 'mdast*'
+      tailwind:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+          - 'autoprefixer'
+          - 'postcss*'
+      lint-and-format:
+        patterns:
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint'
+          - 'prettier*'
+      minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+  # GitHub Actions used across .github/workflows
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'tuesday'
+    labels:
+      - 'dependencies'
+      - 'github-actions'
+    commit-message:
+      prefix: 'ci'
+    groups:
+      actions:
+        patterns:
+          - '*'
+
+  # Root Dockerfile. GPU-stack base images (ROCm, Jetpack) and almalinux 8
+  # are deliberate pins tied to the supported GPU toolchains, so leave them
+  # alone and only track the ubuntu runtime image.
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+    labels:
+      - 'dependencies'
+      - 'docker'
+    commit-message:
+      prefix: 'chore'
+    ignore:
+      - dependency-name: 'rocm/dev-almalinux-8'
+      - dependency-name: 'almalinux'
+      - dependency-name: 'nvcr.io/nvidia/l4t-jetpack'
+      - dependency-name: 'ubuntu'
+        update-types: ['version-update:semver-major']
