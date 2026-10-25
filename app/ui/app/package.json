@@ -68,7 +68,7 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-stringify": "^11.0.0",
-    "storybook": "^10.5.8",
+    "storybook": "^10.6.3",
     "tailwindcss": "^4.1.9",
     "typescript": "~7.0.2",
     "typescript-eslint": "^8.68.0",
